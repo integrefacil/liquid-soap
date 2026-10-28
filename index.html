@@ -79,8 +79,8 @@
   }
   .grid { display: grid; gap: .75rem; }
   .grid-2 { grid-template-columns: repeat(2, 1fr); }
-  .grid-3 { grid-template-columns: repeat(3, 1fr); }
-  @media (max-width: 640px) { .grid-2,.grid-3 { grid-template-columns: 1fr; } }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 380px) { .grid-3 { gap: .5rem; } .field label { font-size: .7rem; } }
   .field { display: flex; flex-direction: column; gap: .25rem; }
   .field label { font-size: .75rem; font-weight: 500; color: hsl(var(--muted-foreground)); min-height: 2.4em; }
   .target { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: .75rem; padding: .75rem 1rem; margin-bottom: .75rem; border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--muted)); }
@@ -137,6 +137,14 @@
   @media (max-width: 900px) {
     .layout { grid-template-columns: 1fr; }
     .summary-card { position: static; order: -1; }
+  }
+  @media (max-width: 640px) {
+    .dose-grid { grid-template-columns: repeat(2, 1fr); }
+    .dose-value { font-size: 1.35rem; }
+    .dose-sub { font-size: .65rem; }
+    .total-hero { padding: .75rem; }
+    .total-value { font-size: 2rem; }
+    .dose-item { padding: .625rem; }
   }
   .step { border-left: 3px solid hsl(var(--primary)); padding: .75rem 1rem; margin-bottom: .75rem; background: hsl(var(--card)); border-radius: 0 var(--radius) var(--radius) 0; }
   .step h3 { margin: 0 0 .5rem; color: hsl(var(--primary)); }
