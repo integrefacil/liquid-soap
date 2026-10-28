@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Sabão Líquido Concentrado</title>
+<style>
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.5rem;
+  }
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    line-height: 1.5;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+  h1 { font-size: 1.5rem; font-weight: 700; margin: 0 0 .25rem; }
+  h2 { font-size: 1.125rem; font-weight: 600; margin: 1.5rem 0 .75rem; }
+  h3 { font-size: 1rem; font-weight: 600; margin: 1rem 0 .5rem; }
+  p { margin: 0 0 .5rem; color: hsl(var(--muted-foreground)); font-size: .875rem; }
+  .card {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    padding: 1rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,.04);
+  }
+  .grid { display: grid; gap: .75rem; }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 640px) { .grid-2,.grid-3 { grid-template-columns: 1fr; } }
+  .field { display: flex; flex-direction: column; gap: .25rem; }
+  .field label { font-size: .75rem; font-weight: 500; color: hsl(var(--muted-foreground)); min-height: 2.4em; }
+  .target { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: .75rem; padding: .75rem 1rem; margin-bottom: .75rem; border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--muted)); }
+  @media (max-width: 480px) { .target { grid-template-columns: 1fr; } }
+  .target-label { font-size: .8rem; font-weight: 600; }
+  .target-hint { font-size: .7rem; color: hsl(var(--muted-foreground)); }
+  .target-input { display: flex; align-items: center; gap: .5rem; }
+  .target-input input { width: 7rem; font-size: 1.25rem; font-weight: 600; background: hsl(var(--background)); }
+  .target-input span { font-size: .8rem; color: hsl(var(--muted-foreground)); }
+  .field .unit { font-size: .7rem; color: hsl(var(--muted-foreground)); }
+  input[type=number] {
+    width: 100%;
+    padding: .5rem .625rem;
+    border: 1px solid hsl(var(--input));
+    border-radius: calc(var(--radius) - 2px);
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-size: .95rem;
+    font-variant-numeric: tabular-nums;
+  }
+  input[type=number]:focus { outline: 2px solid hsl(var(--ring)); outline-offset: -1px; }
+  input[type=number].changed { border-color: hsl(var(--ring)); box-shadow: 0 0 0 1px hsl(var(--ring)); }
+  .factor { font-size: .8rem; color: hsl(var(--muted-foreground)); margin: .5rem 0 0; font-variant-numeric: tabular-nums; }
+  .factor strong { color: hsl(var(--foreground)); }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: .5rem 1rem; border-radius: calc(var(--radius) - 2px);
+    font-size: .875rem; font-weight: 500; cursor: pointer; border: 1px solid transparent;
+    background: hsl(var(--primary)); color: hsl(var(--primary-foreground));
+  }
+  .btn:hover { opacity: .9; }
+  .btn-outline { background: transparent; color: hsl(var(--foreground)); border-color: hsl(var(--border)); }
+  .btn-outline:hover { background: hsl(var(--accent)); }
+  .badge { display: inline-block; padding: .125rem .5rem; border-radius: 9999px; font-size: .7rem; font-weight: 500; background: hsl(var(--secondary)); color: hsl(var(--secondary-foreground)); }
+  .alert { padding: .75rem 1rem; border-radius: var(--radius); border: 1px solid; font-size: .875rem; }
+  .alert-warning { background: #fef3c7; border-color: #f59e0b; color: #78350f; }
+  .dark .alert-warning { background: #451a03; border-color: #b45309; color: #fde68a; }
+  .summary { display: grid; gap: .5rem; }
+  .summary-row { display: flex; justify-content: space-between; align-items: center; padding: .5rem .75rem; border-radius: calc(var(--radius)-2px); background: hsl(var(--muted)); }
+  .summary-row strong { font-variant-numeric: tabular-nums; }
+  .layout { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(270px, .9fr); gap: 1rem; align-items: start; }
+  .summary-card { position: sticky; top: 1rem; }
+  .total-hero { display: flex; flex-direction: column; gap: .125rem; padding: 1rem; border-radius: var(--radius); background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+  .total-label { font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; opacity: .7; }
+  .total-value { display: flex; align-items: baseline; gap: .375rem; font-size: 2.5rem; font-weight: 700; line-height: 1.05; font-variant-numeric: tabular-nums; }
+  .total-value span { font-size: 1rem; font-weight: 500; opacity: .75; }
+  .total-sub { font-size: .8rem; opacity: .75; }
+  .dose-grid { display: grid; gap: .5rem; margin-top: .5rem; }
+  .dose-item { padding: .75rem; border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--card)); }
+  .dose-label { font-size: .7rem; text-transform: uppercase; letter-spacing: .05em; color: hsl(var(--muted-foreground)); }
+  .dose-value { display: flex; align-items: baseline; gap: .25rem; font-size: 1.75rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .dose-value span { font-size: .75rem; font-weight: 500; color: hsl(var(--muted-foreground)); }
+  .dose-sub { font-size: .7rem; color: hsl(var(--muted-foreground)); }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .summary-card { position: static; order: -1; }
+  }
+  .step { border-left: 3px solid hsl(var(--primary)); padding: .75rem 1rem; margin-bottom: .75rem; background: hsl(var(--card)); border-radius: 0 var(--radius) var(--radius) 0; }
+  .step h3 { margin: 0 0 .5rem; color: hsl(var(--primary)); }
+  .step p { color: hsl(var(--foreground)); margin: 0 0 .375rem; }
+  .step ul { margin: .25rem 0 .5rem 1.25rem; padding: 0; }
+  .step li { margin-bottom: .25rem; font-size: .875rem; }
+  .header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .theme-toggle { cursor: pointer; }
+  footer { margin-top: 2rem; text-align: center; color: hsl(var(--muted-foreground)); font-size: .75rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div>
+      <h1>Calculadora de Sabão Líquido Concentrado</h1>
+      <p>Recalcule qualquer ingrediente mantendo a proporção ideal. Base: 100 ml de óleo.</p>
+    </div>
+    <button class="btn btn-outline theme-toggle" id="themeToggle">Tema</button>
+  </div>
+
+  <div class="layout">
+    <section class="card">
+      <h2>Calculadora de Ingredientes</h2>
+    <p>Altere qualquer campo. Os demais recalculam automaticamente.</p>
+    <div class="target">
+      <div>
+        <div class="target-label">Quero produzir</div>
+        <div class="target-hint">Informe o volume final de concentrado desejado em ml.</div>
+      </div>
+      <div class="target-input">
+        <input type="number" id="target_ml" step="1" min="0" inputmode="numeric" value="712" aria-label="Volume de concentrado desejado em ml">
+        <span>ml</span>
+      </div>
+    </div>
+    <div class="grid grid-3" id="fields">
+      <div class="field">
+        <label for="f_oleo">Óleo Vegetal Usado (coado)</label>
+        <input type="number" id="f_oleo" step="1" min="0" inputmode="numeric" value="100">
+        <span class="unit">ml</span>
+      </div>
+      <div class="field">
+        <label for="f_soda">Soda Cáustica em Escamas (96-99%)</label>
+        <input type="number" id="f_soda" step="1" min="0" inputmode="numeric" value="20">
+        <span class="unit">g</span>
+      </div>
+      <div class="field">
+        <label for="f_agua_fria">Água Fria (para a lixívia)</label>
+        <input type="number" id="f_agua_fria" step="1" min="0" inputmode="numeric" value="40">
+        <span class="unit">ml</span>
+      </div>
+      <div class="field">
+        <label for="f_alcool">Álcool Etílico (Etanol)</label>
+        <input type="number" id="f_alcool" step="1" min="0" inputmode="numeric" value="80">
+        <span class="unit">ml</span>
+      </div>
+      <div class="field">
+        <label for="f_acucar">Açúcar Refinado</label>
+        <input type="number" id="f_acucar" step="1" min="0" inputmode="numeric" value="15">
+        <span class="unit">g</span>
+      </div>
+      <div class="field">
+        <label for="f_agua_quente">Água Fervendo (dissolução)</label>
+        <input type="number" id="f_agua_quente" step="1" min="0" inputmode="numeric" value="450">
+        <span class="unit">ml</span>
+      </div>
+      <div class="field">
+        <label for="f_agua_sanitaria">Água Sanitária (2,0-2,5%)</label>
+        <input type="number" id="f_agua_sanitaria" step="1" min="0" inputmode="numeric" value="30">
+        <span class="unit">ml</span>
+      </div>
+      <div class="field">
+        <label for="f_aromatizador">Aromatizador Concentrado (opcional)</label>
+        <input type="number" id="f_aromatizador" step="1" min="0" inputmode="numeric" value="12">
+        <span class="unit">ml</span>
+      </div>
+      <div class="field">
+        <label for="f_volume_concentrado">Volume Total do Concentrado</label>
+        <input type="number" id="f_volume_concentrado" step="1" min="0" inputmode="numeric" value="712">
+        <span class="unit">ml</span>
+      </div>
+    </div>
+    <p class="factor" id="factor"></p>
+    <div id="alert" style="margin-top:.75rem;"></div>
+    <div style="margin-top:.75rem; display:flex; gap:.5rem; flex-wrap:wrap;">
+      <button class="btn" id="resetBtn">Resetar para Padrão (100 ml)</button>
+    </div>
+    </section>
+
+    <section class="card summary-card">
+      <h2 style="margin-top:0;">Resumo & Dosagem</h2>
+      <div id="summary"></div>
+    </section>
+  </div>
+
+  <section style="margin-top:1rem;">
+    <h2>Guia Passo a Passo</h2>
+    <div id="steps"></div>
+  </section>
+
+  <footer>Sabão líquido concentrado a partir de óleo reciclado. Manipule com cuidado.</footer>
+</div>
+
+<script>
+const BASE = {
+  oleo: { name: "Óleo Vegetal Usado (coado)", base: 100, unit: "ml" },
+  soda: { name: "Soda Cáustica em Escamas (96-99%)", base: 20, unit: "g" },
+  agua_fria: { name: "Água Fria (para a lixívia)", base: 40, unit: "ml" },
+  alcool: { name: "Álcool Etílico (Etanol)", base: 80, unit: "ml" },
+  acucar: { name: "Açúcar Refinado", base: 15, unit: "g" },
+  agua_quente: { name: "Água Fervendo (dissolução)", base: 450, unit: "ml" },
+  agua_sanitaria: { name: "Água Sanitária (2,0-2,5%)", base: 30, unit: "ml" },
+  aromatizador: { name: "Aromatizador Concentrado (opcional)", base: 12, unit: "ml" },
+  volume_concentrado: { name: "Volume Total do Concentrado", base: 712, unit: "ml" }
+};
+
+const KEYS = Object.keys(BASE);
+let values = {};
+let lastChanged = null;
+let updating = false;
+
+function fmt(n) {
+  if (isNaN(n)) return "";
+  return String(Math.round(n));
+}
+
+function fmtLitros(l) {
+  const r = Math.round(l * 100) / 100;
+  const s = Number.isInteger(r) ? r.toFixed(0) : r.toFixed(2);
+  return s.replace(".", ",");
+}
+
+function init() {
+  const saved = localStorage.getItem("sabao_state");
+  let start = {};
+  if (saved) {
+    try { start = JSON.parse(saved); } catch(e) {}
+  }
+  KEYS.forEach(k => {
+    values[k] = (start && start[k] != null) ? Number(start[k]) : BASE[k].base;
+  });
+  // Mantém consistência global a partir do óleo salvo (ou padrão 100 ml).
+  const f = values.oleo / BASE.oleo.base;
+  KEYS.forEach(k => { values[k] = BASE[k].base * f; });
+  bindFields();
+  renderValues();
+  resetFactor();
+  updateSummary();
+  updateSteps();
+  checkAlert();
+  save();
+}
+
+function bindFields() {
+  KEYS.forEach(k => {
+    const input = document.getElementById("f_" + k);
+    if (input) input.addEventListener("input", () => onInput(k));
+  });
+  const target = document.getElementById("target_ml");
+  if (target) target.addEventListener("input", onTargetMl);
+}
+
+function renderValues() {
+  KEYS.forEach(k => {
+    const input = document.getElementById("f_" + k);
+    if (input && document.activeElement !== input) {
+      input.value = fmt(values[k]);
+    }
+  });
+  syncTarget();
+}
+
+function syncTarget() {
+  const el = document.getElementById("target_ml");
+  if (!el || document.activeElement === el) return;
+  el.value = fmt(values.volume_concentrado);
+}
+
+function onTargetMl() {
+  const el = document.getElementById("target_ml");
+  const v = parseFloat(el.value);
+  if (isNaN(v) || v <= 0) return;
+  applyScale("volume_concentrado", v);
+}
+
+function onInput(k) {
+  if (updating) return;
+  const input = document.getElementById("f_" + k);
+  const v = parseFloat(input.value);
+  if (isNaN(v) || v <= 0) return;
+  applyScale(k, v);
+}
+
+function applyScale(k, v) {
+  updating = true;
+  const f = v / BASE[k].base;
+  KEYS.forEach(key => { values[key] = BASE[key].base * f; });
+  KEYS.forEach(key => {
+    const inp = document.getElementById("f_" + key);
+    if (!inp) return;
+    inp.value = fmt(values[key]);
+    inp.classList.toggle("changed", key === k);
+  });
+  syncTarget();
+  updating = false;
+  updateFactor(k, v, f);
+  updateSummary();
+  updateSteps();
+  checkAlert();
+  save();
+}
+
+function updateFactor(k, v, f) {
+  const el = document.getElementById("factor");
+  if (!el) return;
+  const extra = k === "volume_concentrado"
+    ? ` (= ${fmtLitros(values.volume_concentrado / 1000)} L)`
+    : "";
+  const fator = Math.round(f * 100) / 100;
+  el.innerHTML = `Escala <strong>×${String(fator).replace(".", ",")}</strong> — base recalculada a partir de <strong>${BASE[k].name} = ${fmt(v)} ${BASE[k].unit}</strong>${extra}.`;
+}
+
+function resetFactor() {
+  const el = document.getElementById("factor");
+  if (!el) return;
+  el.innerHTML = `Escala <strong>×1.000</strong> — padrão (100 ml de óleo).`;
+}
+
+function reset() {
+  const f = 1; // base 100
+  KEYS.forEach(k => { values[k] = BASE[k].base * f; });
+  KEYS.forEach(k => {
+    const inp = document.getElementById("f_" + k);
+    if (inp) {
+      inp.value = fmt(values[k]);
+      inp.classList.remove("changed");
+    }
+  });
+  resetFactor();
+  syncTarget();
+  updateSummary();
+  updateSteps();
+  checkAlert();
+  save();
+}
+
+function updateSummary() {
+  const vc = values.volume_concentrado;
+  const litros = vc / 1000;
+  const leve = vc / 35;
+  const pesada = vc / 50;
+  const html = `
+    <div class="total-hero">
+      <span class="total-label">Concentrado total</span>
+      <div class="total-value">${fmt(vc)}<span>ml</span></div>
+      <span class="total-sub">${fmtLitros(litros)} litros de xarope</span>
+    </div>
+    <div class="dose-grid">
+      <div class="dose-item">
+        <span class="dose-label">Limpeza leve</span>
+        <div class="dose-value">${Math.floor(leve)}<span>baldes de 5 L</span></div>
+        <span class="dose-sub">35 ml (7 tampinhas PET) por balde</span>
+      </div>
+      <div class="dose-item">
+        <span class="dose-label">Limpeza pesada / canil</span>
+        <div class="dose-value">${Math.floor(pesada)}<span>baldes de 5 L</span></div>
+        <span class="dose-sub">50 ml (10 tampinhas PET) por balde</span>
+      </div>
+    </div>
+  `;
+  document.getElementById("summary").innerHTML = html;
+}
+
+function checkAlert() {
+  const soda = values.soda;
+  const el = document.getElementById("alert");
+  if (soda > 500) {
+    el.innerHTML = `<div class="alert alert-warning">Atenção: soda cáustica calculada (${fmt(soda)} g) maior que 500 g. Manipule em balde grande com EPI (luvas, óculos, máscara) e em local ventilado.</div>`;
+  } else {
+    el.innerHTML = "";
+  }
+}
+
+function updateSteps() {
+  const v = values;
+  const html = `
+    <div class="step">
+      <h3>Passo 1 - Preparo da Lixívia Alcalina</h3>
+      <p>Em recipiente plástico resistente ao calor, meça <strong>${fmt(v.agua_fria)} ml de água fria</strong>.</p>
+      <p>Adicione <strong>${fmt(v.soda)} g de soda cáustica em escamas</strong> sobre a água (nunca jogue água sobre a soda).</p>
+      <p>Misture suavemente por 1 a 2 minutos até dissolver. Deixe descansar 5 minutos ao ar livre.</p>
+    </div>
+    <div class="step">
+      <h3>Passo 2 - Saponificação com Óleo e Álcool</h3>
+      <p>Despeje <strong>${fmt(v.oleo)} ml de óleo vegetal usado (coado)</strong> sobre a lixívia morna e misture por 2 minutos.</p>
+      <p>Adicione <strong>${fmt(v.alcool)} ml de álcool etílico</strong> de uma só vez.</p>
+      <p>Mexa 5 a 8 minutos até espuma densa e ponto de pasta translúcida/fita.</p>
+    </div>
+    <div class="step">
+      <h3>Passo 3 - Diluição em Xarope Fluido</h3>
+      <p>Em outro recipiente, dissolva <strong>${fmt(v.acucar)} g de açúcar refinado</strong> em <strong>${fmt(v.agua_quente)} ml de água fervendo</strong>.</p>
+      <p>Despeje a calda fervente sobre a pasta de sabão. Mexa até homogêneo. Deixe amornar 15 a 20 minutos.</p>
+    </div>
+    <div class="step">
+      <h3>Passo 4 - Desodorização Inicial</h3>
+      <p>Adicione <strong>${fmt(v.agua_sanitaria)} ml de água sanitária</strong> ao líquido morno. Misture 1 minuto.</p>
+    </div>
+    <div class="step">
+      <h3>Passo 5 - Descanso Obrigatório de 24 Horas</h3>
+      <p>Deixe descansar 24 horas em recipiente tampado. pH estabiliza e cloro conclui desodorização.</p>
+    </div>
+    <div class="step">
+      <h3>Passo 6 - Aromatização e Coloração (Opcional - Após 24h)</h3>
+      <p>Aroma: adicione <strong>${fmt(v.aromatizador)} ml de aromatizador concentrado</strong> e misture.</p>
+      <p>Cor (opcional): 2 a 5 gotas de corante alimentício azul. Envase em garrafas PET limpas e vedadas.</p>
+    </div>
+  `;
+  document.getElementById("steps").innerHTML = html;
+}
+
+function save() {
+  try { localStorage.setItem("sabao_state", JSON.stringify(values)); } catch(e) {}
+}
+
+document.getElementById("resetBtn").addEventListener("click", reset);
+
+// theme toggle
+const themeToggle = document.getElementById("themeToggle");
+function applyTheme(dark) {
+  document.documentElement.classList.toggle("dark", dark);
+  localStorage.setItem("sabao_theme", dark ? "dark" : "light");
+}
+themeToggle.addEventListener("click", () => {
+  const dark = !document.documentElement.classList.contains("dark");
+  applyTheme(dark);
+});
+(function() {
+  const saved = localStorage.getItem("sabao_theme");
+  const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  applyTheme(saved ? saved === "dark" : prefersDark);
+})();
+
+init();
+</script>
+</body>
+</html>
