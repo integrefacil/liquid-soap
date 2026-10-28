@@ -2,8 +2,17 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Calculadora de Sabão Líquido Concentrado</title>
+<meta name="description" content="Calculadora de proporções e guia de preparo de sabão líquido concentrado a partir de óleo vegetal usado.">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#09090b" id="themeColor">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sabão Líquido">
 <style>
   :root {
     --background: 0 0% 100%;
@@ -135,6 +144,8 @@
   .step ul { margin: .25rem 0 .5rem 1.25rem; padding: 0; }
   .step li { margin-bottom: .25rem; font-size: .875rem; }
   .header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .header-actions { display: flex; gap: .5rem; align-items: center; }
+  .install-hint { margin-bottom: 1rem; padding: .75rem 1rem; border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--secondary)); color: hsl(var(--secondary-foreground)); font-size: .8rem; }
   .theme-toggle { cursor: pointer; }
   footer { margin-top: 2rem; text-align: center; color: hsl(var(--muted-foreground)); font-size: .75rem; }
 </style>
@@ -146,7 +157,14 @@
       <h1>Calculadora de Sabão Líquido Concentrado</h1>
       <p>Recalcule qualquer ingrediente mantendo a proporção ideal. Base: 100 ml de óleo.</p>
     </div>
-    <button class="btn btn-outline theme-toggle" id="themeToggle">Tema</button>
+    <div class="header-actions">
+      <button class="btn" id="installBtn" hidden>Instalar app</button>
+      <button class="btn btn-outline theme-toggle" id="themeToggle">Tema</button>
+    </div>
+  </div>
+
+  <div class="install-hint" id="installHint" hidden>
+    No iPhone ou iPad: toque em <strong>Compartilhar</strong> e escolha <strong>Adicionar à Tela de Início</strong>.
   </div>
 
   <div class="layout">
@@ -456,9 +474,11 @@ document.getElementById("resetBtn").addEventListener("click", reset);
 
 // theme toggle
 const themeToggle = document.getElementById("themeToggle");
+const themeColor = document.getElementById("themeColor");
 function applyTheme(dark) {
   document.documentElement.classList.toggle("dark", dark);
   localStorage.setItem("sabao_theme", dark ? "dark" : "light");
+  if (themeColor) themeColor.setAttribute("content", dark ? "#09090b" : "#ffffff");
 }
 themeToggle.addEventListener("click", () => {
   const dark = !document.documentElement.classList.contains("dark");
@@ -469,6 +489,56 @@ themeToggle.addEventListener("click", () => {
   const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
   applyTheme(saved ? saved === "dark" : prefersDark);
 })();
+
+// instalação PWA
+const installBtn = document.getElementById("installBtn");
+const installHint = document.getElementById("installHint");
+let deferredPrompt = null;
+
+function isStandalone() {
+  return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+}
+
+function isIosSafari() {
+  const ua = window.navigator.userAgent;
+  const ios = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  return ios && !/CriOS|FxiOS|EdgiOS/.test(ua);
+}
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredPrompt = event;
+  if (!isStandalone()) installBtn.hidden = false;
+});
+
+window.addEventListener("appinstalled", () => {
+  deferredPrompt = null;
+  installBtn.hidden = true;
+  installHint.hidden = true;
+});
+
+installBtn.addEventListener("click", async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    try { await deferredPrompt.userChoice; } catch (e) {}
+    deferredPrompt = null;
+    installBtn.hidden = true;
+    return;
+  }
+  installHint.hidden = false;
+});
+
+if (isIosSafari() && !isStandalone()) {
+  installBtn.hidden = false;
+} else if (isStandalone()) {
+  installBtn.hidden = true;
+}
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
 
 init();
 </script>

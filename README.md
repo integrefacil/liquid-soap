@@ -41,6 +41,22 @@ O fator de escala é `F = valor informado / quantidade base do insumo`. Todos os
 
 Abra `index.html` no navegador. Não há build, dependências ou servidor.
 
+## PWA
+
+O app é instalável e funciona offline:
+
+- `manifest.webmanifest` define nome, ícones e modo `standalone`.
+- `sw.js` faz cache do app shell e responde offline.
+- Botão **Instalar app** aparece quando o navegador suporta a instalação. No iPhone/iPad, use **Compartilhar > Adicionar à Tela de Início**.
+
+Service worker e manifest exigem HTTPS ou `localhost`. Para testar localmente:
+
+```bash
+python3 -m http.server 8099
+```
+
+Depois acesse `http://localhost:8099/`.
+
 ## Segurança
 
 Soda cáustica é corrosiva. Use luvas, óculos de proteção e local ventilado. Adicione sempre a soda sobre a água, nunca o contrário.
