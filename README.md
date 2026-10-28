@@ -34,8 +34,8 @@ O fator de escala é `F = valor informado / quantidade base do insumo`. Todos os
 
 ## Dosagem
 
-- Limpeza leve: 35 ml (7 tampinhas PET) por balde de 5 L.
-- Limpeza pesada / canil: 50 ml (10 tampinhas PET) por balde de 5 L.
+- Limpeza leve: 35 ml (7 tampinhas PET) por balde de 5 L, equivalente a 7 ml por litro.
+- Limpeza pesada / canil: 50 ml (10 tampinhas PET) por balde de 5 L, equivalente a 10 ml por litro.
 
 ## Uso local
 

@@ -91,6 +91,9 @@
   .target-input input { width: 7rem; font-size: 1.25rem; font-weight: 600; background: hsl(var(--background)); }
   .target-input span { font-size: .8rem; color: hsl(var(--muted-foreground)); }
   .field .unit { font-size: .7rem; color: hsl(var(--muted-foreground)); }
+  .input-with-unit { display: flex; align-items: center; gap: .375rem; }
+  .input-with-unit input { flex: 1 1 auto; min-width: 0; }
+  .input-with-unit .unit { flex: 0 0 auto; }
   input[type=number] {
     width: 100%;
     padding: .5rem .625rem;
@@ -128,8 +131,7 @@
   .total-value { display: flex; align-items: baseline; gap: .375rem; font-size: 2.5rem; font-weight: 700; line-height: 1.05; font-variant-numeric: tabular-nums; }
   .total-value span { font-size: 1rem; font-weight: 500; opacity: .75; }
   .total-sub { font-size: .8rem; opacity: .75; }
-  .dose-grid { display: grid; gap: .5rem; margin-top: .5rem; }
-  .dose-item { padding: .75rem; border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--card)); }
+  .dose-item { display: flex; flex-direction: column; gap: .125rem; padding: .75rem; border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--card)); }
   .dose-label { font-size: .7rem; text-transform: uppercase; letter-spacing: .05em; color: hsl(var(--muted-foreground)); }
   .dose-value { display: flex; align-items: baseline; gap: .25rem; font-size: 1.75rem; font-weight: 700; font-variant-numeric: tabular-nums; }
   .dose-value span { font-size: .75rem; font-weight: 500; color: hsl(var(--muted-foreground)); }
@@ -139,7 +141,6 @@
     .summary-card { position: static; order: -1; }
   }
   @media (max-width: 640px) {
-    .dose-grid { grid-template-columns: repeat(2, 1fr); }
     .dose-value { font-size: 1.35rem; }
     .dose-sub { font-size: .65rem; }
     .total-hero { padding: .75rem; }
@@ -192,48 +193,66 @@
     <div class="grid grid-3" id="fields">
       <div class="field">
         <label for="f_oleo">Óleo Vegetal Usado (coado)</label>
-        <input type="number" id="f_oleo" step="1" min="0" inputmode="numeric" value="100">
-        <span class="unit">ml</span>
+        <div class="input-with-unit">
+          <input type="number" id="f_oleo" step="1" min="0" inputmode="numeric" value="100">
+          <span class="unit">ml</span>
+        </div>
       </div>
       <div class="field">
         <label for="f_soda">Soda Cáustica em Escamas (96-99%)</label>
-        <input type="number" id="f_soda" step="1" min="0" inputmode="numeric" value="20">
-        <span class="unit">g</span>
+        <div class="input-with-unit">
+          <input type="number" id="f_soda" step="1" min="0" inputmode="numeric" value="20">
+          <span class="unit">g</span>
+        </div>
       </div>
       <div class="field">
         <label for="f_agua_fria">Água Fria (para a lixívia)</label>
-        <input type="number" id="f_agua_fria" step="1" min="0" inputmode="numeric" value="40">
-        <span class="unit">ml</span>
+        <div class="input-with-unit">
+          <input type="number" id="f_agua_fria" step="1" min="0" inputmode="numeric" value="40">
+          <span class="unit">ml</span>
+        </div>
       </div>
       <div class="field">
         <label for="f_alcool">Álcool Etílico (Etanol)</label>
-        <input type="number" id="f_alcool" step="1" min="0" inputmode="numeric" value="80">
-        <span class="unit">ml</span>
+        <div class="input-with-unit">
+          <input type="number" id="f_alcool" step="1" min="0" inputmode="numeric" value="80">
+          <span class="unit">ml</span>
+        </div>
       </div>
       <div class="field">
         <label for="f_acucar">Açúcar Refinado</label>
-        <input type="number" id="f_acucar" step="1" min="0" inputmode="numeric" value="15">
-        <span class="unit">g</span>
+        <div class="input-with-unit">
+          <input type="number" id="f_acucar" step="1" min="0" inputmode="numeric" value="15">
+          <span class="unit">g</span>
+        </div>
       </div>
       <div class="field">
         <label for="f_agua_quente">Água Fervendo (dissolução)</label>
-        <input type="number" id="f_agua_quente" step="1" min="0" inputmode="numeric" value="450">
-        <span class="unit">ml</span>
+        <div class="input-with-unit">
+          <input type="number" id="f_agua_quente" step="1" min="0" inputmode="numeric" value="450">
+          <span class="unit">ml</span>
+        </div>
       </div>
       <div class="field">
         <label for="f_agua_sanitaria">Água Sanitária (2,0-2,5%)</label>
-        <input type="number" id="f_agua_sanitaria" step="1" min="0" inputmode="numeric" value="30">
-        <span class="unit">ml</span>
+        <div class="input-with-unit">
+          <input type="number" id="f_agua_sanitaria" step="1" min="0" inputmode="numeric" value="30">
+          <span class="unit">ml</span>
+        </div>
       </div>
       <div class="field">
         <label for="f_aromatizador">Aromatizador Concentrado (opcional)</label>
-        <input type="number" id="f_aromatizador" step="1" min="0" inputmode="numeric" value="12">
-        <span class="unit">ml</span>
+        <div class="input-with-unit">
+          <input type="number" id="f_aromatizador" step="1" min="0" inputmode="numeric" value="12">
+          <span class="unit">ml</span>
+        </div>
       </div>
       <div class="field">
         <label for="f_volume_concentrado">Volume Total do Concentrado</label>
-        <input type="number" id="f_volume_concentrado" step="1" min="0" inputmode="numeric" value="712">
-        <span class="unit">ml</span>
+        <div class="input-with-unit">
+          <input type="number" id="f_volume_concentrado" step="1" min="0" inputmode="numeric" value="712">
+          <span class="unit">ml</span>
+        </div>
       </div>
     </div>
     <p class="factor" id="factor"></p>
@@ -379,7 +398,7 @@ function updateFactor(k, v, f) {
 function resetFactor() {
   const el = document.getElementById("factor");
   if (!el) return;
-  el.innerHTML = `Escala <strong>×1.000</strong> — padrão (100 ml de óleo).`;
+  el.innerHTML = `Escala <strong>×1</strong> — padrão (100 ml de óleo).`;
 }
 
 function reset() {
@@ -403,25 +422,21 @@ function reset() {
 function updateSummary() {
   const vc = values.volume_concentrado;
   const litros = vc / 1000;
-  const leve = vc / 35;
-  const pesada = vc / 50;
+  const diluicaoLeve = 35 / 5;
+  const diluicaoPesada = 50 / 5;
+  const aguaLeve = 1000 - diluicaoLeve;
+  const aguaPesada = 1000 - diluicaoPesada;
   const html = `
     <div class="total-hero">
       <span class="total-label">Concentrado total</span>
       <div class="total-value">${fmt(vc)}<span>ml</span></div>
       <span class="total-sub">${fmtLitros(litros)} litros de xarope</span>
     </div>
-    <div class="dose-grid">
-      <div class="dose-item">
-        <span class="dose-label">Limpeza leve</span>
-        <div class="dose-value">${Math.floor(leve)}<span>baldes de 5 L</span></div>
-        <span class="dose-sub">35 ml (7 tampinhas PET) por balde</span>
-      </div>
-      <div class="dose-item">
-        <span class="dose-label">Limpeza pesada / canil</span>
-        <div class="dose-value">${Math.floor(pesada)}<span>baldes de 5 L</span></div>
-        <span class="dose-sub">50 ml (10 tampinhas PET) por balde</span>
-      </div>
+    <div class="dose-item" style="margin-top:.5rem;">
+      <span class="dose-label">Diluição para 1 litro</span>
+      <div class="dose-value">${diluicaoLeve}<span>ml de concentrado</span></div>
+      <span class="dose-sub">+ ${aguaLeve} ml de água — dose leve (35 ml / 5 L)</span>
+      <span class="dose-sub">Dose pesada: ${diluicaoPesada} ml + ${aguaPesada} ml de água (50 ml / 5 L)</span>
     </div>
   `;
   document.getElementById("summary").innerHTML = html;
